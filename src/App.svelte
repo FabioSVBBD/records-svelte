@@ -1,63 +1,64 @@
 <script>
-  import svelteLogo from './assets/svelte.svg';
-  import Counter from './lib/Counter.svelte';
+  import Button from './lib/Button.svelte'
+  import EditableTransaction from './lib/EditableTransaction.svelte'
+  import './app.css'
 
-  let clicks = 0;
+  const transactions = [
+    {
+      type: 'Withdrawal',
+      amount: 100,
+      date: new Date(2022, 1, 2),
+      description: 'An absolute mad man was born',
+      editing: false,
+    },
+    {
+      type: 'Deposit',
+      amount: 100,
+      date: new Date(2022, 3, 2),
+      description: 'An absolute mad man was born',
+      editing: false,
+    },
+    {
+      type: 'Deposit',
+      amount: 100,
+      date: new Date(2022, 12, 2),
+      description: 'An absolute mad man was born',
+      editing: false,
+    },
+  ]
 
-  $: mutated = clicks * 5;
-
-  $: {
-    if (mutated === 5) {
-      console.log('mutated is 5');
-    }
-  }
+  const updateReceived = (index, transaction) => (transactions[index] = transaction.detail)
 </script>
 
 <main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-      <img src="/vite.svg" class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte</h1>
+  <h1>Welcome! View and edit your records here</h1>
 
-  <div class="card">
-    <Counter />
-  </div>
+  <article>
+    <Button tier="primary">Add new</Button>
 
-  <p>
-    Check out <a
-      href="https://github.com/sveltejs/kit#readme"
-      target="_blank"
-      rel="noreferrer">SvelteKit</a
-    >, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">Click on the Vite and Svelte logos to learn more</p>
-
-  <button on:mouseup={() => clicks--} on:mousedown={() => clicks++}>
-    Hover or Click me
-  </button>
-  <p>Clicks: {clicks}</p>
-  <p>Mutated: {mutated}</p>
+    {#each transactions as { type, amount, date, description, editing }, i (`${date} - ${description}`)}
+      <EditableTransaction
+        on:updated={event => updateReceived(i, event)}
+        {type}
+        {amount}
+        {date}
+        {description}
+        {editing}
+      />
+    {/each}
+  </article>
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
+  main {
+    @apply p-8 flex flex-col items-center;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+
+  h1 {
+    @apply text-4xl font-bold mb-16;
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
+
+  article {
+    width: min(28rem, 90%);
   }
 </style>
