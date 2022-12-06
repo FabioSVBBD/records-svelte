@@ -15,26 +15,29 @@
       amount: 100,
       date: new Date(2022, 1, 2),
       description: '1.An absolute mad man was born',
+      id: 1,
     },
     {
       type: 'Deposit',
       amount: 100,
       date: new Date(2022, 3, 2),
       description: '2.An absolute mad man was born',
+      id: 2,
     },
     {
       type: 'Deposit',
       amount: 100,
       date: new Date(2022, 12, 2),
       description: '3.An absolute mad man was born',
+      id: 3,
     },
   ]
 
-  const updateReceived = (index, transaction) => (transactions[index] = transaction.detail)
+  const update = (index, transaction) => (transactions[index] = transaction.detail)
 
-  const transactionRemoved = i => (transactions = [...transactions.slice(0, i), ...transactions.slice(i + 1)])
+  const remove = i => (transactions = [...transactions.slice(0, i), ...transactions.slice(i + 1)])
 
-  const transacitonAdded = () =>
+  const add = () =>
     (transactions = [
       ...transactions.map(t => ({
         ...t,
@@ -46,6 +49,7 @@
         date: new Date(),
         description: '',
         editing: true,
+        id: uuid(),
       },
     ])
 </script>
@@ -54,13 +58,13 @@
   <h1>Welcome! View and edit your records here</h1>
 
   <article>
-    <Button tier="primary" on:click={transacitonAdded}>Add new</Button>
+    <Button tier="primary" on:click={add}>Add new</Button>
 
-    {#each transactions as { type, amount, date, description, editing }, i (uuid())}
-      <div animate:flip in:fade out:fly={{ x: 100 }}>
+    {#each transactions as { type, amount, date, description, editing, id }, i (id)}
+      <div animate:flip={{ duration: 250 }} in:fly={{ y: -10, duration: 50 }} out:fade>
         <EditableTransaction
-          on:save={event => updateReceived(i, event)}
-          on:remove={() => transactionRemoved(i)}
+          on:save={event => update(i, event)}
+          on:remove={() => remove(i)}
           {type}
           {amount}
           {date}
@@ -70,7 +74,7 @@
       </div>
     {/each}
 
-    <IconButton on:click={transacitonAdded} on:keydown={transacitonAdded} />
+    <IconButton on:click={add} on:keydown={add} />
   </article>
 </main>
 
