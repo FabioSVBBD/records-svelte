@@ -1,8 +1,12 @@
 <script>
   import { createEventDispatcher } from 'svelte'
-  import { fade } from 'svelte/transition'
+  import { fade, fly } from 'svelte/transition'
   import { zarFormat } from '../utils/formatting'
-  import { clickOutside } from '../directives/click-outside'
+
+  import close from '../assets/close.svg'
+  import bin from '../assets/bin.svg'
+  import pencil from '../assets/pencil.svg'
+  import tick from '../assets/tick.svg'
 
   export let editing = false
   export let type = 'Deposit'
@@ -10,61 +14,104 @@
   export let date
   export let description
 
+  let show = false
+  let _type = type
+  let _amount = amount
+  let _date = date
+  let _description = description
+
   // @ts-ignore
   const dispatch = new createEventDispatcher()
 
-  const transactionUpdated = () => {
-    dispatch('updated', {
-      type,
-      amount,
-      date,
-      description,
-      editing,
+  const save = () => {
+    dispatch('save', {
+      type: _type,
+      amount: _amount,
+      date: _date,
+      description: _description,
     })
+
+    editing = false
+  }
+
+  const remove = () => dispatch('remove')
+
+  const closed = () => {
+    editing = false
+
+    _type = type
+    _amount = amount
+    _date = date
+    _description = description
   }
 
   const typeOptions = ['Deposit', 'Withdrawal']
 
-  const handleClick = inside => {
-    if (editing !== inside) editing = inside
-  }
-
-  $: formattedAmount = `${type === 'Deposit' ? '+' : '-'} ${zarFormat.format(amount)}`
+  $: formattedAmount = `${_type === 'Deposit' ? '+' : '-'} ${zarFormat.format(_amount)}`
 </script>
 
-<section
-  use:clickOutside
-  on:click_outside={() => handleClick(false)}
-  on:click={() => handleClick(true)}
-  on:keydown={() => handleClick(true)}
->
-  {#if editing}
-    <select in:fade bind:value={type} class="col-span-2" on:blur={transactionUpdated}>
-      {#each typeOptions as option}
-        <option value={option}>
-          {option}
-        </option>
-      {/each}
-    </select>
+<article on:mouseenter={() => (show = true)} on:mouseleave={() => (show = false)}>
+  <section>
+    {#if editing}
+      <select in:fade bind:value={_type} class="col-span-2">
+        {#each typeOptions as option}
+          <option value={option}>
+            {option}
+          </option>
+        {/each}
+      </select>
 
-    <input in:fade class="text-xl" bind:value={amount} type="number" on:blur={transactionUpdated} />
-    <input in:fade class="text-right" bind:value={date} type="datetime-local" on:blur={transactionUpdated} />
-    <input in:fade class="col-span-2" bind:value={description} type="text" on:blur={transactionUpdated} />
-  {:else}
-    <p in:fade class="text-xl">{formattedAmount}</p>
-    <p in:fade class="text-right">{new Date(date).toDateString()}</p>
-    <p in:fade class="col-span-2 text-black/75">{description}</p>
+      <input in:fade class="text-xl" bind:value={_amount} type="number" />
+      <input in:fade class="text-right" bind:value={_date} type="datetime-local" />
+      <input in:fade class="col-span-2" bind:value={_description} type="text" />
+    {:else}
+      <p in:fade class="text-xl">{formattedAmount}</p>
+      <p in:fade class="text-right">{new Date(_date).toDateString()}</p>
+      <p in:fade class="col-span-2 text-black/75">{_description}</p>
+    {/if}
+  </section>
+
+  {#if editing}
+    <img
+      transition:fly={{ x: -10, duration: 150 }}
+      src={close}
+      alt="close"
+      on:click={closed}
+      on:keydown={() => (editing = false)}
+    />
+    <img transition:fly={{ x: -10, duration: 150 }} src={tick} alt="save" on:click={save} on:keydown={save} />
   {/if}
-</section>
+
+  {#if show && !editing}
+    <img
+      transition:fly={{ x: -10, duration: 150 }}
+      src={pencil}
+      alt="edit"
+      on:click={() => (editing = true)}
+      on:keydown={() => (editing = true)}
+    />
+    <img
+      transition:fly={{ x: -10, duration: 150 }}
+      src={bin}
+      alt="remove"
+      class="second"
+      on:click={remove}
+      on:keydown={remove}
+    />
+  {/if}
+</article>
 
 <style>
+  article {
+    position: relative;
+  }
   section {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     row-gap: 0.5rem;
     column-gap: 0.5rem;
 
-    margin: 0.5rem 0;
+    margin: 0.5rem 2rem;
     padding: 0.5rem;
 
     text-align: left;
@@ -82,5 +129,26 @@
     padding: 0.1rem 0.4rem;
     background-color: rgb(0 0 0 / 0.1);
     @apply rounded-sm;
+  }
+
+  img {
+    width: 20px;
+    height: 18px;
+    position: absolute;
+    right: 0;
+    top: 1rem;
+    cursor: pointer;
+  }
+
+  img.second {
+    top: 2.8rem;
+  }
+
+  img[alt='close'] {
+    top: 2.2rem;
+  }
+
+  img[alt='save'] {
+    top: 4.2rem;
   }
 </style>
