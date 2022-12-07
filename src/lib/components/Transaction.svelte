@@ -1,12 +1,8 @@
 <script>
   import { createEventDispatcher } from 'svelte'
   import { fade, fly } from 'svelte/transition'
-  import { zarFormat } from '../utils/formatting'
-
-  import close from '../assets/close.svg'
-  import bin from '../assets/bin.svg'
-  import pencil from '../assets/pencil.svg'
-  import tick from '../assets/tick.svg'
+  import { zarFormat } from '$/utils'
+  import { bin, close, pencil, tick } from '@assets/icons'
 
   export let editing = false
   export let type = 'Deposit'
@@ -105,13 +101,14 @@
   article {
     position: relative;
   }
+
   section {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     row-gap: 0.5rem;
     column-gap: 0.5rem;
 
-    margin: 0.5rem 2rem;
+    margin: 0 2rem;
     padding: 0.5rem;
 
     text-align: left;

@@ -1,7 +1,14 @@
-import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
-import sveltePreprocess from 'svelte-preprocess';
+import { defineConfig } from 'vite'
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+import sveltePreprocess from 'svelte-preprocess'
+import path from 'path'
 
 export default defineConfig({
   plugins: [svelte({ preprocess: [sveltePreprocess({ postcss: true })] })],
-});
+  resolve: {
+    alias: {
+      $: path.resolve('src/lib/'),
+      '@assets': path.resolve('src/assets'),
+    },
+  },
+})

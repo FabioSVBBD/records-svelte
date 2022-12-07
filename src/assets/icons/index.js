@@ -1,0 +1,5 @@
+export { default as add } from './add.svg'
+export { default as bin } from './bin.svg'
+export { default as close } from './close.svg'
+export { default as pencil } from './pencil.svg'
+export { default as tick } from './tick.svg'
