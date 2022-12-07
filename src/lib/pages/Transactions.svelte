@@ -3,7 +3,7 @@
   import { flip } from 'svelte/animate'
   import { v4 as uuid } from 'uuid'
   import { transactions } from '$/stores'
-  import { Transaction, IconButton, Loader } from '$/components'
+  import { Transaction, IconButton, Loader, Page } from '$/components'
   import { add } from '@assets/icons'
   import { getTransactions } from '$/services'
   import { thumbsDown } from '@assets/animations'
@@ -35,37 +35,45 @@
     ])
 </script>
 
-<article>
-  {#await promise}
-    <Loader />
-  {:then}
-    <section>
-      {#each $transactions as { type, amount, date, description, editing, id }, i (id)}
-        <div animate:flip={{ duration: 250 }} in:fly={{ y: -10, duration: 50 }} out:fade>
-          <Transaction
-            on:save={event => update(i, event)}
-            on:remove={() => remove(i)}
-            {type}
-            {amount}
-            {date}
-            {description}
-            {editing}
-          />
-        </div>
-      {/each}
+<Page>
+  <h1>Welcome! View and edit your records here</h1>
 
-      <IconButton src={add} alt="add" on:click={addTransaction} on:keydown={addTransaction} className="mt-2" />
-    </section>
-  {:catch}
-    <Animation src={thumbsDown} />
-    <p>
-      Could not get your transactions. <br />
-      <strong>Are you experiencing network problems?</strong>
-    </p>
-  {/await}
-</article>
+  <article out:fly={{ duration: 1 }}>
+    {#await promise}
+      <Loader />
+    {:then}
+      <section>
+        {#each $transactions as { type, amount, date, description, editing, id }, i (id)}
+          <div animate:flip={{ duration: 250 }} in:fly|local={{ y: -10, duration: 50 }} out:fade|local>
+            <Transaction
+              on:save={event => update(i, event)}
+              on:remove={() => remove(i)}
+              {type}
+              {amount}
+              {date}
+              {description}
+              {editing}
+            />
+          </div>
+        {/each}
+
+        <IconButton src={add} alt="add" on:click={addTransaction} on:keydown={addTransaction} className="mt-2" />
+      </section>
+    {:catch}
+      <Animation src={thumbsDown} />
+      <p>
+        Could not get your transactions. <br />
+        <strong>Are you experiencing network problems?</strong>
+      </p>
+    {/await}
+  </article>
+</Page>
 
 <style>
+  h1 {
+    @apply text-4xl font-bold mb-16;
+  }
+
   article {
     width: 100%;
     display: flex;

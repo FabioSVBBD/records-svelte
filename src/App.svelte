@@ -1,20 +1,15 @@
 <script>
-  import { Transaction } from '$/pages'
+  import Router from 'svelte-spa-router'
+  import { routes } from '$/utils'
   import './app.css'
 </script>
 
 <main>
-  <h1>Welcome! View and edit your records here</h1>
-
-  <Transaction />
+  <Router {routes} />
 </main>
 
 <style>
   main {
-    @apply p-8 flex flex-col items-center;
-  }
-
-  h1 {
-    @apply text-4xl font-bold mb-16;
+    @apply flex flex-col items-center;
   }
 </style>

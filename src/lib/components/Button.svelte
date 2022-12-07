@@ -9,13 +9,13 @@
   button {
     flex-grow: 1;
     padding: 0.25rem 2rem;
-
     width: 100%;
 
     font-weight: 600;
-    font-size: 1.5rem;
+    font-size: 1rem;
     line-height: 2rem;
 
+    white-space: nowrap;
     border-radius: 0.375rem;
 
     transition-duration: 200ms;
