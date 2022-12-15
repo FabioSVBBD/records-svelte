@@ -1,7 +1,7 @@
 <script>
+  import { link } from 'svelte-spa-router'
   import { Animation } from '$/components'
   import { target } from '@assets/animations'
-  import { link } from 'svelte-spa-router'
 </script>
 
 <article>

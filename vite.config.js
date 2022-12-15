@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [svelte({ preprocess: [sveltePreprocess({ postcss: true })] })],
   resolve: {
     alias: {
+      src: path.resolve('src/'),
       $: path.resolve('src/lib/'),
       '@assets': path.resolve('src/assets'),
     },

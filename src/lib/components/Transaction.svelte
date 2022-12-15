@@ -16,7 +16,6 @@
   let _date = date
   let _description = description
 
-  // @ts-ignore
   const dispatch = new createEventDispatcher()
 
   const save = () => {

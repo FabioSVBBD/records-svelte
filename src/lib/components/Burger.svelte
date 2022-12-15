@@ -3,13 +3,10 @@
 
   export let hideDesktop = false
   export let hideTablet = false
-
-  let opened = false
-
-  const toggleMenu = () => (opened = !opened)
+  export let open = false
 </script>
 
-<section class:hideDesktop class:hideTablet class:opened on:click={toggleMenu} on:keydown={toggleMenu}>
+<section class:hideDesktop class:hideTablet class:opened={open} on:click on:keydown>
   <img src={line} alt="line" class="n1" />
   <img src={line} alt="line" class="n2" />
   <img src={line} alt="line" class="n3" />
@@ -23,6 +20,7 @@
     transition: all;
     position: relative;
     width: 2rem;
+    z-index: 10;
   }
 
   img[alt='line'] {

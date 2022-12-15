@@ -1,7 +1,15 @@
 <script>
+  import { fade } from 'svelte/transition'
   import { castle } from '@assets/icons'
   import { routeNameMap } from '$/utils'
   import { Button, Burger } from '$/components'
+  import { auth } from '$/services'
+  import { client, isAuthenticated } from '$/stores/auth0'
+
+  const login = () => auth.loginWithPopup($client)
+  const logout = () => auth.logout($client)
+
+  let burgerOpen = false
 </script>
 
 <header>
@@ -16,12 +24,33 @@
     {/each}
   </nav>
 
-  <section class="buttons">
-    <Button tier="secondary">Log in</Button>
-    <Button>Sign up</Button>
-  </section>
+  {#if !$isAuthenticated}
+    <section class="buttons">
+      <Button tier="secondary" on:click={login}>Log in</Button>
+      <Button>Sign up</Button>
+    </section>
+  {:else}
+    <section class="buttons">
+      <Button tier="secondary" on:click={logout}>Logout</Button>
+    </section>
+  {/if}
 
-  <Burger hideDesktop />
+  <Burger hideDesktop open={burgerOpen} on:click={() => (burgerOpen = !burgerOpen)} />
+
+  {#if burgerOpen}
+    <article transition:fade={{ duration: 100 }} class="mobile-nav">
+      {#each routeNameMap as page}
+        <a href={page.route}>{page.name}</a>
+      {/each}
+
+      {#if !$isAuthenticated}
+        <button type="button" on:click={login}>Log in</button>
+        <button type="button">Sign up</button>
+      {:else}
+        <button type="button" on:click={logout}>Logout</button>
+      {/if}
+    </article>
+  {/if}
 </header>
 
 <style>
@@ -60,6 +89,34 @@
 
   img[alt='Records'] {
     height: 4rem;
+  }
+
+  article.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    @apply bg-slate-200;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    row-gap: 1rem;
+  }
+
+  article.mobile-nav > a {
+    font-size: 2rem;
+  }
+
+  article.mobile-nav > button {
+    line-height: 1;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #138ec4;
   }
 
   @media only screen and (max-width: 992px) {
