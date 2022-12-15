@@ -128,8 +128,7 @@ rules:
   no-proto: 2
   no-restricted-syntax:
     - 2
-    - selector: CallExpression[callee.object.name='console'][callee.property.name=/^(debug|info|log|warn|error|trace)$/]
-      message: Potentially rogue console statement.
+    - selector: CallExpression[callee.object.name='console'][callee.property.name=/^(debug|info|log|warn|trace)$/]
   no-return-assign: 2
   no-return-await: 0
   no-script-url: 2

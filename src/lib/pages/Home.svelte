@@ -5,6 +5,7 @@
   import { rightArrow } from '@assets/icons'
 
   const login = () => auth.loginWithPopup($client)
+  const signup = () => auth.signUp($client)
 </script>
 
 <Nav />
@@ -18,7 +19,7 @@
   {:else}
     <div class="flex flex-col gap-y-2">
       <Button tier="secondary" on:click={login}>Log in</Button>
-      <Button>Sign up</Button>
+      <Button on:click={signup}>Sign up</Button>
     </div>
   {/if}
 </section>

@@ -7,6 +7,7 @@
   import { client, isAuthenticated } from '$/stores/auth0'
 
   const login = () => auth.loginWithPopup($client)
+  const signup = () => auth.signUp($client)
   const logout = () => auth.logout($client)
 
   let burgerOpen = false
@@ -27,7 +28,7 @@
   {#if !$isAuthenticated}
     <section class="buttons">
       <Button tier="secondary" on:click={login}>Log in</Button>
-      <Button>Sign up</Button>
+      <Button on:click={signup}>Sign up</Button>
     </section>
   {:else}
     <section class="buttons">
@@ -45,7 +46,7 @@
 
       {#if !$isAuthenticated}
         <button type="button" on:click={login}>Log in</button>
-        <button type="button">Sign up</button>
+        <button type="button" on:click={signup}>Sign up</button>
       {:else}
         <button type="button" on:click={logout}>Logout</button>
       {/if}
