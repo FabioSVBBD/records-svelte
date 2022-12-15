@@ -1,5 +1,3 @@
-import { Home, Transactions, NotFound } from '$/pages'
-
 export const routeNameMap = [
   {
     route: '/',
@@ -10,9 +8,3 @@ export const routeNameMap = [
     name: 'Transactions',
   },
 ]
-
-export const routes = {
-  '/': Home,
-  '/transactions': Transactions,
-  '*': NotFound,
-}
