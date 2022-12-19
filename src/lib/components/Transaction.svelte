@@ -1,8 +1,9 @@
 <script>
   import { createEventDispatcher } from 'svelte'
-  import { fade, fly } from 'svelte/transition'
+  import { fade } from 'svelte/transition'
   import { zarFormat } from '$/utils'
-  import { bin, close, pencil, tick } from '@assets/icons'
+  import { bin, pencil } from '@assets/icons'
+  import { clickOutside } from '$/directives'
 
   export let editing = false
   export let type = 'Deposit'
@@ -19,6 +20,9 @@
   const dispatch = new createEventDispatcher()
 
   const save = () => {
+    editing = false
+    show = false
+
     dispatch('save', {
       type: _type,
       amount: _amount,
@@ -33,6 +37,7 @@
 
   const closed = () => {
     editing = false
+    show = false
 
     _type = type
     _amount = amount
@@ -40,13 +45,23 @@
     _description = description
   }
 
+  const setShowing = () => (show = true)
+  const setEditing = () => (editing = true)
+
   const typeOptions = ['Deposit', 'Withdrawal']
 
   $: formattedAmount = `${_type === 'Deposit' ? '+' : '-'} ${zarFormat.format(_amount)}`
 </script>
 
-<article on:mouseenter={() => (show = true)} on:mouseleave={() => (show = false)}>
-  <section>
+<article use:clickOutside on:click_outside={() => (show = false)}>
+  {#if show && !editing}
+    <div class="overlay" transition:fade={{ duration: 150 }}>
+      <img src={pencil} alt="edit" on:click={setEditing} on:keydown={setEditing} />
+      <img src={bin} alt="remove" class="second" on:click={remove} on:keydown={remove} />
+    </div>
+  {/if}
+
+  <section on:click={setShowing} on:keydown={setShowing}>
     {#if editing}
       <select in:fade bind:value={_type} class="col-span-2">
         {#each typeOptions as option}
@@ -59,41 +74,15 @@
       <input in:fade class="text-xl" bind:value={_amount} type="number" />
       <input in:fade class="text-right" bind:value={_date} type="datetime-local" />
       <input in:fade class="col-span-2" bind:value={_description} type="text" />
+
+      <button type="button" on:click|stopPropagation={closed}>cancel</button>
+      <button type="button" on:click|stopPropagation={save}>save</button>
     {:else}
       <p in:fade class="text-xl">{formattedAmount}</p>
       <p in:fade class="text-right">{new Date(_date).toDateString()}</p>
       <p in:fade class="col-span-2 text-black/75">{_description}</p>
     {/if}
   </section>
-
-  {#if editing}
-    <img
-      transition:fly={{ x: -10, duration: 150 }}
-      src={close}
-      alt="close"
-      on:click={closed}
-      on:keydown={() => (editing = false)}
-    />
-    <img transition:fly={{ x: -10, duration: 150 }} src={tick} alt="save" on:click={save} on:keydown={save} />
-  {/if}
-
-  {#if show && !editing}
-    <img
-      transition:fly={{ x: -10, duration: 150 }}
-      src={pencil}
-      alt="edit"
-      on:click={() => (editing = true)}
-      on:keydown={() => (editing = true)}
-    />
-    <img
-      transition:fly={{ x: -10, duration: 150 }}
-      src={bin}
-      alt="remove"
-      class="second"
-      on:click={remove}
-      on:keydown={remove}
-    />
-  {/if}
 </article>
 
 <style>
@@ -107,7 +96,6 @@
     row-gap: 0.5rem;
     column-gap: 0.5rem;
 
-    margin: 0 2rem;
     padding: 0.5rem;
 
     text-align: left;
@@ -127,10 +115,31 @@
     @apply rounded-sm;
   }
 
-  img {
-    width: 20px;
-    height: 18px;
+  .overlay {
     position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 2rem;
+
+    @apply rounded-md;
+  }
+
+  button {
+    background: rgb(255 255 255 / 0.1);
+    @apply rounded-md;
+  }
+
+  img {
+    width: 25px;
     right: 0;
     top: 1rem;
     cursor: pointer;
@@ -138,13 +147,5 @@
 
   img.second {
     top: 2.8rem;
-  }
-
-  img[alt='close'] {
-    top: 2.2rem;
-  }
-
-  img[alt='save'] {
-    top: 4.2rem;
   }
 </style>

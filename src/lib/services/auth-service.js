@@ -1,11 +1,11 @@
 import { createAuth0Client } from '@auth0/auth0-spa-js'
 import { user, isAuthenticated, popupOpen } from '$/stores'
-import { config } from 'src/auth_config'
+import { config } from 'src/config'
 
 const createClient = async () =>
   await createAuth0Client({
-    domain: config.domain,
-    clientId: config.clientId,
+    domain: config.auth_domain,
+    clientId: config.auth_clientId,
     cacheLocation: 'localstorage',
   })
 

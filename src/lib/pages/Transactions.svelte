@@ -2,7 +2,7 @@
   import { fade, fly } from 'svelte/transition'
   import { flip } from 'svelte/animate'
   import { addTransaction, fetchTransactions, removeTransaction, transactions, updateTransaction, user } from '$/stores'
-  import { Transaction, IconButton, Loader, Page, Animation, Select } from '$/components'
+  import { Transaction, IconButton, Loader, Page, Animation, Select, SubHeading } from '$/components'
   import { thumbsDown } from '@assets/animations'
   import { add, castle } from '@assets/icons'
   import { days, months, years } from '$/utils'
@@ -26,7 +26,8 @@
 </header>
 
 <Page>
-  <div class="flex flex-col sm:flex-row w-full justify-between items-center my-8 gap-x-2 gap-y-1">
+  <SubHeading>Filters</SubHeading>
+  <div class="flex flex-col sm:flex-row w-full justify-between items-center mb-8 gap-x-2 gap-y-1">
     <Select bind:value={year} options={years} defaultOption={DEFAULT} />
     <Select bind:value={month} options={months} defaultOption={DEFAULT} />
     <Select bind:value={day} options={days(month?.value || 0)} defaultOption={DEFAULT} />
@@ -36,6 +37,7 @@
     {#await promise}
       <Loader />
     {:then}
+      <SubHeading>Transactions</SubHeading>
       <section>
         {#each $transactions as { type, amount, date, description, editing, id }, i (id)}
           <div animate:flip={{ duration: 250 }} in:fly|local={{ y: -10, duration: 50 }} out:fade|local>
@@ -93,7 +95,7 @@
     display: flex;
     flex-direction: column;
     row-gap: 0.5rem;
-    width: min(34rem, 100%);
+    width: 100%;
   }
 
   p {

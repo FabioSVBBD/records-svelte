@@ -1,4 +1,6 @@
-const domain = 'https://localhost:5001'
+import { config } from 'src/config'
+
+const { domain } = config
 
 const getTransactions = async (userId, { year, month, day }) => {
   const params = {}
