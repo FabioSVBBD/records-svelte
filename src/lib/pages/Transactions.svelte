@@ -4,7 +4,7 @@
   import { addTransaction, fetchTransactions, removeTransaction, transactions, updateTransaction, user } from '$/stores'
   import { Transaction, IconButton, Loader, Page, Animation, Select, SubHeading } from '$/components'
   import { thumbsDown } from '@assets/animations'
-  import { add, castle } from '@assets/icons'
+  import { add } from '@assets/icons'
   import { days, months, years } from '$/utils'
 
   const DEFAULT = 'any'
@@ -22,7 +22,7 @@
 
 <header>
   <h1>{$user.given_name}</h1>
-  <img src={castle} alt="profile" class="h-8 sm:h-16" />
+  <img src={$user.picture} alt="profile" class="h-8 sm:h-16" />
 </header>
 
 <Page>
