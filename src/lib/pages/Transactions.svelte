@@ -1,69 +1,36 @@
 <script>
   import { fade, fly } from 'svelte/transition'
   import { flip } from 'svelte/animate'
-  import { v4 as uuid } from 'uuid'
-  import { transactions, user } from '$/stores'
-  import { getTransactions, postTransaction, putTransaction } from '$/services'
-  import { Transaction, IconButton, Loader, Page, Animation } from '$/components'
+  import { addTransaction, fetchTransactions, removeTransaction, transactions, updateTransaction, user } from '$/stores'
+  import { Transaction, IconButton, Loader, Page, Animation, Select } from '$/components'
   import { thumbsDown } from '@assets/animations'
-  import { add } from '@assets/icons'
+  import { add, castle } from '@assets/icons'
+  import { days, months, years } from '$/utils'
 
-  const fetchTransactions = () => {
-    user.subscribe(async u => {
-      if ($user.email) {
-        $transactions = await getTransactions(u.email)
-      }
-    })
+  const DEFAULT = 'any'
 
-    return $transactions
-  }
+  let year = new Date().getUTCFullYear()
+  let month = months.find(m => m.value === new Date().getMonth() + 1)
+  let day = DEFAULT
 
-  const promise = fetchTransactions()
+  let promise
 
-  const update = (index, transaction) => {
-    const updatedTransaction = {
-      ...transaction.detail,
-      id: $transactions[index].id,
-    }
-
-    if (!Object.is($transactions[index], updatedTransaction)) {
-      $transactions[index] = updatedTransaction
-
-      putTransaction($user.email, updatedTransaction)
-    }
-  }
-
-  const remove = i => ($transactions = [...$transactions.slice(0, i), ...$transactions.slice(i + 1)])
-
-  const addTransaction = async () => {
-    const newTransaction = {
-      type: 'Deposit',
-      amount: 0,
-      date: new Date(),
-      description: '',
-      editing: true,
-      id: uuid(),
-    }
-
-    const [transaction] = await postTransaction($user.email, newTransaction)
-
-    newTransaction.id = transaction.id
-
-    $transactions = [
-      ...$transactions.map(t => ({
-        ...t,
-        editing: false,
-      })),
-      newTransaction,
-    ]
+  $: {
+    promise = fetchTransactions({ year, month: month.value, day })
   }
 </script>
 
+<header>
+  <h1>{$user.given_name}</h1>
+  <img src={castle} alt="profile" class="h-8 sm:h-16" />
+</header>
+
 <Page>
-  <header>
-    <h1>Welcome!</h1>
-    <h2>You can view and edit your transactions here</h2>
-  </header>
+  <div class="flex flex-col sm:flex-row w-full justify-between items-center my-8 gap-x-2 gap-y-1">
+    <Select bind:value={year} options={years} defaultOption={DEFAULT} />
+    <Select bind:value={month} options={months} defaultOption={DEFAULT} />
+    <Select bind:value={day} options={days(month?.value || 0)} defaultOption={DEFAULT} />
+  </div>
 
   <article out:fly={{ duration: 1 }}>
     {#await promise}
@@ -73,8 +40,8 @@
         {#each $transactions as { type, amount, date, description, editing, id }, i (id)}
           <div animate:flip={{ duration: 250 }} in:fly|local={{ y: -10, duration: 50 }} out:fade|local>
             <Transaction
-              on:save={event => update(i, event)}
-              on:remove={() => remove(i)}
+              on:save={event => updateTransaction(i, event)}
+              on:remove={() => removeTransaction(i)}
               {type}
               {amount}
               {date}
@@ -98,16 +65,20 @@
 
 <style>
   header {
-    @apply mb-8;
+    @apply mb-8 flex justify-between items-center;
     text-align: center;
+
+    width: 100%;
+    background: rgb(255 255 255 / 0.2);
+    padding: 0.4rem 1rem;
+  }
+
+  header img {
+    border-radius: 50%;
   }
 
   h1 {
     @apply text-3xl font-semibold;
-  }
-
-  h2 {
-    @apply text-lg;
   }
 
   article {
@@ -115,6 +86,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 2rem;
   }
 
   section {

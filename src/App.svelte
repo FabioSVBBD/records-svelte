@@ -7,18 +7,26 @@
   import { Home, NotFound, Transactions } from '$/pages'
   import './app.css'
 
-  onMount(async () => {
+  const initializeClient = async () => {
     $client = await auth.createClient()
 
     $isAuthenticated = await $client.isAuthenticated()
     $user = await $client.getUser()
-  })
+  }
+
+  onMount(initializeClient)
 
   const routes = {
     '/': Home,
     '/transactions': wrap({
       component: Transactions,
-      conditions: [() => $isAuthenticated],
+      conditions: [
+        async () => {
+          await initializeClient()
+
+          return $isAuthenticated
+        },
+      ],
     }),
     '*': NotFound,
   }

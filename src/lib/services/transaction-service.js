@@ -1,7 +1,22 @@
-const domain = 'https://localhost:7291'
+const domain = 'https://localhost:5001'
 
-const getTransactions = async userId => {
-  const res = await fetch(`${domain}/${userId}/transactions`)
+const getTransactions = async (userId, { year, month, day }) => {
+  const params = {}
+  if (typeof year === 'number') {
+    params.year = year
+  }
+
+  if (typeof month === 'number') {
+    params.month = month
+  }
+
+  if (typeof day === 'number') {
+    params.day = day
+  }
+
+  const urlParams = new URLSearchParams(params).toString()
+
+  const res = await fetch(`${domain}/${userId}/transactions?${urlParams}`)
 
   if (!res.ok) {
     throw new Error('/transactions GET failure')
