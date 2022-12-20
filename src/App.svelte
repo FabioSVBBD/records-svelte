@@ -5,6 +5,7 @@
   import { client, isAuthenticated, user } from '$/stores'
   import { auth } from '$/services'
   import './app.css'
+  import LoadingPage from '$/pages/LoadingPage.svelte'
 
   const initializeClient = async () => {
     $client = await auth.createClient()
@@ -16,9 +17,13 @@
   onMount(initializeClient)
 
   const routes = {
-    '/': wrap({ asyncComponent: () => import('$/pages/Home.svelte') }),
+    '/': wrap({
+      asyncComponent: () => import('$/pages/HomePage.svelte'),
+      loadingComponent: LoadingPage,
+    }),
     '/transactions': wrap({
-      asyncComponent: () => import('$/pages/Transactions.svelte'),
+      asyncComponent: () => import('$/pages/TransactionsPage.svelte'),
+      loadingComponent: LoadingPage,
       conditions: [
         async () => {
           await initializeClient()
@@ -27,7 +32,10 @@
         },
       ],
     }),
-    '*': wrap({ asyncComponent: () => import('$/pages/NotFound.svelte') }),
+    '*': wrap({
+      asyncComponent: () => import('$/pages/NotFoundPage.svelte'),
+      loadingComponent: LoadingPage,
+    }),
   }
 </script>
 

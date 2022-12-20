@@ -12,7 +12,7 @@
     <h3>There's nothing here...</h3>
   </div>
 
-  <a href="/home" use:link>Go home</a>
+  <a href="/" use:link>Go home</a>
 </article>
 
 <style>

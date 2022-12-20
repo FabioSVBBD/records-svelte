@@ -1,3 +1,3 @@
-export { default as Home } from './Home.svelte'
-export { default as Transactions } from './Transactions.svelte'
-export { default as NotFound } from './NotFound.svelte'
+export { default as HomePage } from './HomePage.svelte'
+export { default as TransactionsPage } from './TransactionsPage.svelte'
+export { default as NotFoundPage } from './NotFoundPage.svelte'
