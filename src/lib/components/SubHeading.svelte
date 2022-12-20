@@ -1,7 +1,7 @@
-<h3><slot /></h3>
+<p><slot /></p>
 
 <style>
-  h3 {
+  p {
     width: 100%;
 
     font-weight: 500;

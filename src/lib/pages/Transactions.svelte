@@ -1,11 +1,12 @@
 <script>
   import { fade, fly } from 'svelte/transition'
   import { flip } from 'svelte/animate'
-  import { addTransaction, fetchTransactions, removeTransaction, transactions, updateTransaction, user } from '$/stores'
-  import { Transaction, IconButton, Loader, Page, Animation, Select, SubHeading } from '$/components'
+  import { addTransaction, fetchTransactions, removeTransaction, transactions, updateTransaction } from '$/stores'
+  import { Transaction, IconButton, Loader, Page, Animation, Select, SubHeading, Header } from '$/components'
   import { thumbsDown } from '@assets/animations'
   import { add } from '@assets/icons'
   import { days, months, years } from '$/utils'
+  import Heading from '$/components/Heading.svelte'
 
   const DEFAULT = 'any'
 
@@ -20,10 +21,9 @@
   }
 </script>
 
-<header>
-  <h1>{$user.given_name}</h1>
-  <img src={$user.picture} alt="profile" class="h-8 sm:h-16" />
-</header>
+<Header />
+
+<Heading>Transactions</Heading>
 
 <Page>
   <SubHeading>Filters</SubHeading>
@@ -66,23 +66,6 @@
 </Page>
 
 <style>
-  header {
-    @apply mb-8 flex justify-between items-center;
-    text-align: center;
-
-    width: 100%;
-    background: rgb(255 255 255 / 0.2);
-    padding: 0.4rem 1rem;
-  }
-
-  header img {
-    border-radius: 50%;
-  }
-
-  h1 {
-    @apply text-3xl font-semibold;
-  }
-
   article {
     width: 100%;
     display: flex;

@@ -58,6 +58,8 @@
 
   img {
     @apply transition-all;
+    width: 20px;
+    height: 10px;
   }
 
   img.open {
