@@ -51,6 +51,7 @@
   }
 
   img {
+    width: 0.6rem;
     height: 1.2rem;
     align-items: center;
     margin-top: 0.5rem;

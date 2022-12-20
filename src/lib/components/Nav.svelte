@@ -15,7 +15,7 @@
 
 <header>
   <section id="logobox">
-    <img src={castle} alt="Records" />
+    <img src={castle} alt="Records" class="h-8 w-8 sm:h-16 sm:w-16" />
     <h1>Records</h1>
   </section>
 
@@ -86,10 +86,6 @@
 
   a:hover {
     color: rgb(255 255 255 / 0.5);
-  }
-
-  img[alt='Records'] {
-    height: 4rem;
   }
 
   article.mobile-nav {

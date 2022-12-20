@@ -4,7 +4,6 @@
   import wrap from 'svelte-spa-router/wrap'
   import { client, isAuthenticated, user } from '$/stores'
   import { auth } from '$/services'
-  import { Home, NotFound, Transactions } from '$/pages'
   import './app.css'
 
   const initializeClient = async () => {
@@ -17,9 +16,9 @@
   onMount(initializeClient)
 
   const routes = {
-    '/': Home,
+    '/': wrap({ asyncComponent: () => import('$/pages/Home.svelte') }),
     '/transactions': wrap({
-      component: Transactions,
+      asyncComponent: () => import('$/pages/Transactions.svelte'),
       conditions: [
         async () => {
           await initializeClient()
@@ -28,7 +27,7 @@
         },
       ],
     }),
-    '*': NotFound,
+    '*': wrap({ asyncComponent: () => import('$/pages/NotFound.svelte') }),
   }
 </script>
 

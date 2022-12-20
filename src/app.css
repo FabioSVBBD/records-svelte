@@ -3,6 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --main: #138ec4;
+}
+
 ::-webkit-scrollbar {
   width: 15px;
   border: 10px solid transparent;
