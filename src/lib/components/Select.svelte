@@ -52,7 +52,7 @@
 
   @media screen and (max-width: 640px) {
     article {
-      width: min(18rem, 100%);
+      width: 100%;
     }
   }
 
