@@ -1,4 +1,4 @@
-import { config } from 'dotenv'
+import { config } from 'src/config'
 
 export const authorizedFetch = (url, options) => {
   if (!options) {
@@ -16,7 +16,7 @@ export const authorizedFetch = (url, options) => {
   const { subscriptionKey } = config
 
   if (subscriptionKey) {
-    options.headers['Ocp-Apim-Subscription-Key'] = config.subscriptionKey
+    options.headers['Ocp-Apim-Subscription-Key'] = subscriptionKey
   }
 
   return fetch(url, options)
