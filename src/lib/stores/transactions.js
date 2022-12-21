@@ -1,6 +1,6 @@
 import { get, writable } from 'svelte/store'
 import { user } from './auth0'
-import { getTransactions, postTransaction, putTransaction } from '$/services'
+import { deleteTransaction, getTransactions, postTransaction, putTransaction } from '$/services'
 import { v4 as uuid } from 'uuid'
 
 export const transactions = writable([])
@@ -35,10 +35,15 @@ export const updateTransaction = (index, transaction) => {
   }
 }
 
-export const removeTransaction = i => {
+export const removeTransaction = async id => {
+  const { email } = get(user)
   const currentTransactions = get(transactions)
 
-  transactions.set([...currentTransactions.slice(0, i), ...currentTransactions.slice(i + 1)])
+  const response = await deleteTransaction(email, id)
+
+  if (response) {
+    transactions.set(currentTransactions.filter(transaction => transaction.id !== id))
+  }
 }
 
 export const addTransaction = async () => {

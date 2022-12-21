@@ -4,6 +4,7 @@
   import { zarFormat } from '$/utils'
   import { bin, pencil } from '@assets/icons'
   import { clickOutside } from '$/directives'
+  import { BallLoader, Glass } from '$/components'
 
   export let editing = false
   export let type = 'Deposit'
@@ -11,6 +12,7 @@
   export let date
   export let description
 
+  let removing = false
   let show = false
   let _type = type
   let _amount = amount
@@ -33,7 +35,10 @@
     editing = false
   }
 
-  const remove = () => dispatch('remove')
+  const remove = () => {
+    removing = true
+    dispatch('remove')
+  }
 
   const closed = () => {
     editing = false
@@ -55,10 +60,14 @@
 
 <article use:clickOutside on:click_outside={() => (show = false)}>
   {#if show && !editing}
-    <div class="overlay" transition:fade={{ duration: 150 }}>
-      <img src={pencil} alt="edit" on:click={setEditing} on:keydown={setEditing} />
-      <img src={bin} alt="remove" class="second" on:click={remove} on:keydown={remove} />
-    </div>
+    <Glass>
+      {#if removing}
+        <BallLoader />
+      {:else}
+        <img src={pencil} alt="edit" on:click={setEditing} on:keydown={setEditing} />
+        <img src={bin} alt="remove" class="second" on:click={remove} on:keydown={remove} />
+      {/if}
+    </Glass>
   {/if}
 
   <section on:click={setShowing} on:keydown={setShowing}>
@@ -113,24 +122,6 @@
     padding: 0.1rem 0.4rem;
     background-color: rgb(0 0 0 / 0.1);
     @apply rounded-sm;
-  }
-
-  .overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    column-gap: 2rem;
-
-    @apply rounded-md;
   }
 
   button {

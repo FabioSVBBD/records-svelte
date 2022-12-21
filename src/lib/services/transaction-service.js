@@ -72,4 +72,16 @@ const putTransaction = async (userId, transaction) => {
   return json.value || []
 }
 
-export { getTransactions, postTransaction, putTransaction }
+const deleteTransaction = async (userId, id) => {
+  const res = await authorizedFetch(`${domain}/${userId}/transactions?id=${id}`, { method: 'DELETE' })
+
+  if (!res.ok) {
+    throw new Error('/transactions DELETE failure')
+  }
+
+  const json = await res.json()
+
+  return json.value || []
+}
+
+export { getTransactions, postTransaction, putTransaction, deleteTransaction }

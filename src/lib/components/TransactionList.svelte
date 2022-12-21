@@ -1,9 +1,8 @@
 <script>
   import { fade, fly } from 'svelte/transition'
   import { flip } from 'svelte/animate'
-  import { Transaction } from '$/components'
+  import { Transaction, IconButton } from '$/components'
   import { transactions, addTransaction, removeTransaction, updateTransaction } from '$/stores'
-  import IconButton from './IconButton.svelte'
   import { add } from '@assets/icons'
 </script>
 
@@ -12,7 +11,7 @@
     <div animate:flip={{ duration: 250 }} in:fly|local={{ y: -10, duration: 50 }} out:fade|local>
       <Transaction
         on:save={event => updateTransaction(i, event)}
-        on:remove={() => removeTransaction(i)}
+        on:remove={() => removeTransaction(id)}
         {type}
         {amount}
         {date}
@@ -27,6 +26,7 @@
 
 <style>
   section {
+    position: relative;
     display: flex;
     flex-direction: column;
     row-gap: 0.5rem;

@@ -1,8 +1,11 @@
 import { defineConfig } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import sveltePreprocess from 'svelte-preprocess'
-import path from 'path'
 import { VitePWA } from 'vite-plugin-pwa'
+import path from 'path'
+import dns from 'dns'
+
+dns.setDefaultResultOrder('verbatim')
 
 export default defineConfig({
   resolve: {
