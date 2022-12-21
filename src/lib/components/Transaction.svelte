@@ -4,7 +4,7 @@
   import { zarFormat } from '$/utils'
   import { bin, pencil } from '@assets/icons'
   import { clickOutside } from '$/directives'
-  import { BallLoader, Glass } from '$/components'
+  import { BallLoader, Glass, Select } from '$/components'
 
   export let editing = false
   export let type = 'Deposit'
@@ -14,10 +14,8 @@
 
   let removing = false
   let show = false
-  let _type = type
-  let _amount = amount
-  let _date = date
-  let _description = description
+
+  let snapshot
 
   const dispatch = new createEventDispatcher()
 
@@ -26,10 +24,10 @@
     show = false
 
     dispatch('save', {
-      type: _type,
-      amount: _amount,
-      date: _date,
-      description: _description,
+      type,
+      amount,
+      date,
+      description,
     })
 
     editing = false
@@ -44,18 +42,29 @@
     editing = false
     show = false
 
-    _type = type
-    _amount = amount
-    _date = date
-    _description = description
+    if (snapshot) {
+      type = snapshot.type
+      amount = snapshot.amount
+      date = snapshot.date
+      description = snapshot.description
+    }
   }
 
   const setShowing = () => (show = true)
-  const setEditing = () => (editing = true)
+  const setEditing = () => {
+    editing = true
+
+    snapshot = {
+      type,
+      amount,
+      date,
+      description,
+    }
+  }
 
   const typeOptions = ['Deposit', 'Withdrawal']
 
-  $: formattedAmount = `${_type === 'Deposit' ? '+' : '-'} ${zarFormat.format(_amount)}`
+  $: formattedAmount = `${type === 'Deposit' ? '+' : '-'} ${zarFormat.format(amount)}`
 </script>
 
 <article use:clickOutside on:click_outside={() => (show = false)}>
@@ -72,24 +81,18 @@
 
   <section on:click={setShowing} on:keydown={setShowing}>
     {#if editing}
-      <select in:fade bind:value={_type} class="col-span-2">
-        {#each typeOptions as option}
-          <option value={option}>
-            {option}
-          </option>
-        {/each}
-      </select>
+      <Select bind:value={type} options={typeOptions} secondary />
 
-      <input in:fade class="text-xl" bind:value={_amount} type="number" />
-      <input in:fade class="text-right" bind:value={_date} type="datetime-local" />
-      <input in:fade class="col-span-2" bind:value={_description} type="text" />
+      <input in:fade class="text-xl" bind:value={amount} type="number" />
+      <input in:fade class="text-right" bind:value={date} type="datetime-local" />
+      <input in:fade class="col-span-2" bind:value={description} type="text" />
 
       <button type="button" on:click|stopPropagation={closed}>cancel</button>
       <button type="button" on:click|stopPropagation={save}>save</button>
     {:else}
       <p in:fade class="text-xl">{formattedAmount}</p>
-      <p in:fade class="text-right">{new Date(_date).toDateString()}</p>
-      <p in:fade class="col-span-2 text-black/75">{_description}</p>
+      <p in:fade class="text-right">{new Date(date).toDateString()}</p>
+      <p in:fade class="col-span-2 text-black/75">{description}</p>
     {/if}
   </section>
 </article>
@@ -117,8 +120,7 @@
     @apply transition-all shadow-md;
   }
 
-  input,
-  select {
+  input {
     padding: 0.1rem 0.4rem;
     background-color: rgb(0 0 0 / 0.1);
     @apply rounded-sm;

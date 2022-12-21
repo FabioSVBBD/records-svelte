@@ -12,11 +12,11 @@
       <Transaction
         on:save={event => updateTransaction(i, event)}
         on:remove={() => removeTransaction(id)}
-        {type}
-        {amount}
-        {date}
-        {description}
-        {editing}
+        bind:type
+        bind:amount
+        bind:date
+        bind:description
+        bind:editing
       />
     </div>
   {/each}
